@@ -1,5 +1,4 @@
 package Project.IFS_System;
-
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics;
@@ -44,13 +43,12 @@ public class IFSPlotter extends IFSFrame  {
 	private int bottomMargin = 20;
 	int noOfTransforms;
 	private double[][] matrixData;
-	private ArrayList<double[][]> archive = new ArrayList<double[][]>();
+	private ArrayList<PlotData> archive = new ArrayList<PlotData>();
 	private BufferedImage theAI;
 	private Graphics2D theAG;
 	private Transaction theAL = new Transaction();
 	private Color penColour = new Color(0,0,0);
 	private Color backgroundColour = new Color(255,255,255);
-	private double scaleFactor = 15;
 	IFSGUI matricies;
 	ArtWindow artWindow;
 	private JMenuBar menubar = new JMenuBar();
@@ -181,7 +179,7 @@ public class IFSPlotter extends IFSFrame  {
 				theAG = theAI.createGraphics();	
 				theAG.setPaint(backgroundColour);
 				theAG.fillRect(0, 0, W, H);
-				plotArchive(archive, H, theAG, plotsUsed);
+				plotArchive(archive, H, theAG,plotsUsed);
 				repaint();
 			}
 		});
@@ -265,7 +263,7 @@ public class IFSPlotter extends IFSFrame  {
 				artWindow = matricies.getArtWindow();
 				if(artWindow != null)
 				{
-					artWindow.transferImage(archive, xOrigin, yOrigin, plotsUsed);		
+					artWindow.transferImage(archive, xOrigin, yOrigin,plotsUsed);		
 				}
 				else
 				{
@@ -277,10 +275,12 @@ public class IFSPlotter extends IFSFrame  {
 
 		undo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("Plots currently used at this undo " + plotsUsed);
+				System.out.println("Plots currently in archive at this undo " + archive.size());
 				clearScreen();
 				if(plotsUsed > 0){
 					plotsUsed--;
-					plotArchive(archive, H, theAG, plotsUsed);
+					plotArchive(archive, H, theAG,plotsUsed);
 					System.out.println("Plots currently used at this undo " + plotsUsed);
 					System.out.println("Plots currently in archive at this undo " + archive.size());
 				}
@@ -293,7 +293,7 @@ public class IFSPlotter extends IFSFrame  {
 				{
 					clearScreen();
 					plotsUsed++;
-					plotArchive(archive, H, theAG, plotsUsed);
+					plotArchive(archive, H, theAG,plotsUsed);
 					System.out.println("Plots currently used at this redo " + plotsUsed);
 					System.out.println("Plots currently in archive at this redo " + archive.size());
 				}
@@ -338,8 +338,6 @@ public class IFSPlotter extends IFSFrame  {
 		{
 			public void mouseDragged (MouseEvent e)
 			{
-				System.out.println("Sketch window mouse dragged" + e.getX() +  "  " + e.getY());
-//				if (!mouseInRange(e.getX(),e.getY())) {artWindow.overToYou();}
 				if(dragOrigin && originPickedUp)
 				{
 					int xDrag = e.getX();
@@ -380,38 +378,34 @@ public class IFSPlotter extends IFSFrame  {
 		public void actionPerformed(ActionEvent ae)
 		{
 			String actionIs = ae.getActionCommand();
+			
 			if (actionIs.equals("Pick Colour"))
 			{ 
 				pickColour();
-			} 		    
+			} 	
+			
 			if (actionIs.equals("Plot"))
 			{ 	    	
 				if(archive.size() > plotsUsed)
 				{
-					for(int i = archive.size() - 1; i > plotsUsed; i--)
+					for(int i = archive.size() - 1; i > plotsUsed - 1; i--)
 					{
 						archive.remove(i);
 					}
 
 				}
 				matrixData = matricies.getData();  
-				noOfTransforms = matrixData.length - 2;
-				matrixData[noOfTransforms][0] = penColour.getRed();
-				matrixData[noOfTransforms][1] = penColour.getGreen();
-				matrixData[noOfTransforms][2] = penColour.getBlue();
-				matrixData[noOfTransforms][3] = xOrigin;
-				matrixData[noOfTransforms][4] = yOrigin;
-				matrixData[noOfTransforms][5] = (Integer) tilt.getValue();
-				matrixData[noOfTransforms][6] = (Integer) scaler.getValue();
-				matrixData[noOfTransforms + 1][0] = noOfTransforms;
-				matrixData[noOfTransforms + 1][1] = (Integer) density.getValue();
+				int[] origin = {xOrigin, yOrigin};
+				PlotData data = new PlotData(penColour, origin, (Integer) tilt.getValue(), 
+						(Integer) density.getValue(), (Integer) scaler.getValue(), matrixData);
+				archive.add(data);
+				plot(theAG, data, H);  
 				plotsUsed++;
-				archive.add(matrixData);
-				plot(theAG, matrixData, noOfTransforms, penColour, H);		   
 			} 
+			
 			if (actionIs.equals("Clear"))
 			{ 
-				archive = new ArrayList<double[][]>();
+				archive = new ArrayList<PlotData>();
 				plotsUsed = 0;
 				clearScreen();
 				repaint();
