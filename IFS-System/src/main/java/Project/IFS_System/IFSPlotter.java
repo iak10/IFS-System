@@ -65,7 +65,7 @@ public class IFSPlotter extends IFSFrame  {
 	private boolean dragOrigin = false; // boolean to say if origin can be dragged
 	private int plotsUsed = 0; // number ofplots in use for image shown
 	private MySketchCanvas canvas = new MySketchCanvas(); // panel for graphics
-/*
+/**
  * The constructor of IFSPLotter gives the IFSGUI to and the art window to global 
  * variable so they can be referenced in the rest of the methods, initialises the 
  * labels,spinners and buttons and adds them to the content pane. The menu bar and
@@ -264,7 +264,7 @@ public class IFSPlotter extends IFSFrame  {
 				dragOrigin = true;				
 			}
 		});
-		/*
+		/**
 		 * Checks to see if art window is there before proceeding with transfer
 		 * of the image on the sketch pad to the art window
 		 */
@@ -282,7 +282,7 @@ public class IFSPlotter extends IFSFrame  {
 				}
 			}
 		});
-        /*
+        /**
          * The undo option removes one plot from the current image on the sketch pad
          * by clearing the screen and replotting the rest.
          */
@@ -299,7 +299,7 @@ public class IFSPlotter extends IFSFrame  {
 				}
 			}
 		});
-		/*
+		/**
          * The redo option removes one plot from the current image on the sketch pad
          * by clearing the screen and replotting everything.
          */
@@ -325,7 +325,7 @@ public class IFSPlotter extends IFSFrame  {
 		clearScreen();
 	} // end of constructor
 
-	/*
+	/**
 	 * The class Transaction adds the action listeners to the buttons and 
 	 * the colour picker
 	 */
@@ -384,11 +384,10 @@ public class IFSPlotter extends IFSFrame  {
 	{
 		backgroundColour = JColorChooser.showDialog(this, "Pick colour", Color.WHITE );
 	}
-	/*
+	/**
 	 * The class MySketchCanvas extends JPanel, and holds the graphics that
 	 * are displayed on the JFrame. 
 	 */
-	
 	public class MySketchCanvas extends JPanel   
 	{
 		private boolean originPickedUp = false;
@@ -432,7 +431,7 @@ public class IFSPlotter extends IFSFrame  {
 					}
 				} 		    	    	
 			});
-            /*
+            /**
              * Check if the origin is being dragged move it to the mouse coordinates and
              * repaint the panel to cover the old and new positions of the origin
              */
@@ -458,7 +457,7 @@ public class IFSPlotter extends IFSFrame  {
 				}
 			});		
 		}
-		/*
+		/**
 		 * The paintCompoent method draws the image from the BufferedImage 
 		 * instance onto the panel and then plots the origin if it is visible
 		 * @param g - Graphics2D
@@ -469,7 +468,7 @@ public class IFSPlotter extends IFSFrame  {
 			g.drawImage( theAI,  0,  0,  this);	
 			if(showOrigin == true) plotOrigin((Graphics2D) g, xOrigin, H - yOrigin);
 		}
-		/*
+		/**
 		 * The mouseInRamge method checks if the current position of the mouse is within
 		 * the panel.
 		 * @param mouseXp - int
@@ -479,7 +478,7 @@ public class IFSPlotter extends IFSFrame  {
 		{
 			return (mouseXp <= W && mouseYp <= H && mouseXp >= 0 && mouseYp >= 0);	
 		}
-		/*
+		/**
 		 * The plotOrigin method draws the origin on the panel
 		 * @param mouseXp - int
 		 * @param mouseYp - int
