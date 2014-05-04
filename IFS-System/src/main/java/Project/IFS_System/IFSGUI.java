@@ -1,24 +1,18 @@
 package Project.IFS_System;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Frame;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.NumberFormat;
-
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -28,11 +22,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.SpinnerModel;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 
@@ -83,7 +72,7 @@ public class IFSGUI extends JFrame {
 		setResizable(false); 
 		Container cp = getContentPane();
 		cp.setLayout(null);
-		selfReference = this; 
+		selfReference = this;
 
 		numFormat1 = NumberFormat.getNumberInstance();
 
@@ -150,38 +139,12 @@ public class IFSGUI extends JFrame {
 			equals[i].setBounds(120, gap*i + 103, 30, 30);
 			plus[i].setBounds(360, gap*i + 103, 30, 30);
 			
-			
-			artWindowBox.setMnemonic(KeyEvent.VK_C); 
-			artWindowBox.setSelected(false);
-			
-			artWindowBox.addActionListener(new ActionListener(){
-				public void actionPerformed(ActionEvent e){
-					if(artWindowBox.isSelected()) System.out.println("checkbox checked");
-					if(artWindow == false) System.out.println("artwindow set to false");
-					if(artWindowBox.isSelected() && artWindow == false)
-					{
-						System.out.println("entered if statement");
-						artWindowFrame = new ArtWindow(selfReference);
-						artWindow = true;
-					}
-					else if (!artWindowBox.isSelected() && artWindow == true)
-					{
-	//					artWindowBox.setSelected(true);
-						artWindowFrame.dispose();
-						artWindowClose();
-					}
-				}
-			} );
-			
 			artWindowBox.setBounds(700, 100, 20, 20);
 			cp.add(artWindowBox);
-
-
 			cp.add(labels1[i]);
 			cp.add(labels2[i]);
 			cp.add(labels3[i]);
 			cp.add(labels4[i]);	
-
 			cp.add(brackets1[i]);
 			cp.add(brackets2[i]);
 			cp.add(brackets3[i]);
@@ -192,9 +155,27 @@ public class IFSGUI extends JFrame {
 			cp.add(brackets8[i]);
 			cp.add(equals[i]);
 			cp.add(plus[i]);
-
-
-		}
+		} // end of for loop to position widget for eight transformations
+		
+		artWindowBox.setMnemonic(KeyEvent.VK_C); 
+		artWindowBox.setSelected(false);
+		artWindowBox.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				if(artWindowBox.isSelected()) System.out.println("checkbox checked");
+				if(artWindow == false) System.out.println("artwindow set to false");
+				if(artWindowBox.isSelected() && artWindow == false)
+				{
+					System.out.println("entered if statement");
+					artWindowFrame = new ArtWindow(selfReference);
+					artWindow = true;
+				}
+				else if (!artWindowBox.isSelected() && artWindow == true)
+				{
+					artWindowFrame.dispose();
+					artWindowClose();
+				}
+			}
+		} );
 
 		JLabel transformationsLabel = new JLabel("Select the number of transformations you wish to use:");
 		JLabel artBoxLabel = new JLabel("Open Art Window");
@@ -207,7 +188,6 @@ public class IFSGUI extends JFrame {
 
 		JLabel probability = new JLabel("<html><body>Probablity<br>Weightings</body></html>");
 		probability.setFont(new Font("Serif", Font.PLAIN, 15));
-		//probability.setBounds(535, 25, 200, 65);
 		probability.setBounds(15, 25, 100, 65);
 		cp.add(probability);
 
@@ -269,27 +249,28 @@ public class IFSGUI extends JFrame {
 
 					saveAs.doClick();
 				}
-
-				try
+				else
 				{
-					FileOutputStream fos = new FileOutputStream(filePath);
-					DataOutputStream dos = new DataOutputStream(fos);
-
-					dos.writeDouble(currentTransformations);
-					for(int i = 0; i < currentTransformations; i++)
+					try
 					{
-						for(int j = 0; j < dataOnTransformations; j++ )
-						{
-							dos.writeDouble(Double.parseDouble(matrixData[i][j].getText()));
+						FileOutputStream fos = new FileOutputStream(filePath);
+						DataOutputStream dos = new DataOutputStream(fos);
 
+						dos.writeDouble(currentTransformations);
+						for(int i = 0; i < currentTransformations; i++)
+						{
+							for(int j = 0; j < dataOnTransformations; j++ )
+							{
+								dos.writeDouble(Double.parseDouble(matrixData[i][j].getText()));
+
+							}
 						}
 					}
+					catch(IOException e)
+					{
+						System.out.println(e);
+					}
 				}
-				catch(IOException e)
-				{
-					System.out.println(e);
-				}
-
 			}
 		});
 
@@ -418,7 +399,7 @@ public class IFSGUI extends JFrame {
 
 	public double[][] getData()
 	{
-		double[][] matrix = new double[currentTransformations + 2][dataOnTransformations];
+		double[][] matrix = new double[currentTransformations][dataOnTransformations];
 		for(int i = 0; i < currentTransformations; i++)
 		{
 			for(int j = 0; j < dataOnTransformations; j++)

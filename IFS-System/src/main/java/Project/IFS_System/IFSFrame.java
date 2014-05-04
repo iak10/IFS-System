@@ -1,9 +1,7 @@
 package Project.IFS_System;
-import java.awt.Color;
 import java.util.Random;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 
